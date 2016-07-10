@@ -2,8 +2,8 @@
   "name": "beerbaud",
   "version": "0.0.0",
   "dependencies": {
-    "angular": "^1.4.0",
-    "angular-route": "^1.4.0"
+    "angular-route": "^1.4.0",
+    "blackbaud-skyux": "^1.6.5"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.0"
