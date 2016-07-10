@@ -10,7 +10,8 @@
  */
 angular
   .module('beerbaudApp', [
-    'ngRoute'
+    'ngRoute',
+    'sky'
   ])
   .config(function ($routeProvider) {
     $routeProvider
