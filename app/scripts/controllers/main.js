@@ -8,23 +8,20 @@
  * Controller of the beerbaudApp
  */
 angular.module('beerbaudApp')
-    .controller('MainCtrl', function($scope) {
+    .controller('MainCtrl', function($scope, breweryDB) {
 
-    	var dataSet1 = {};
+        $scope.locations = [];
+        $scope.paginationOptions = { itemsPerPage: 20 };
 
-        $scope.paginationOptions = {
-            recordCount: 10
-        };
-
-        $scope.gridOptions2 = {
+        $scope.gridOptions = {
             columns: [{
                 caption: 'Name',
-                jsonmap: 'name',
+                jsonmap: 'brewery.name',
                 id: 1,
                 name: 'name'
             }, {
                 caption: 'Address',
-                jsonmap: 'address',
+                jsonmap: 'streetAddress',
                 id: 2,
                 name: 'address'
             }, {
@@ -34,11 +31,11 @@ angular.module('beerbaudApp')
                 name: 'website'
             }, {
                 caption: 'Icon',
-                jsonmap: 'icon',
+                jsonmap: 'brewery.images.icon',
                 id: 4,
                 name: 'icon'
             }],
-            data: dataSet1,
+            data: $scope.locations,
             fixedToolbar: true,
             selectedColumnIds: [1, 2, 3, 4],
             sortOptions: {
@@ -49,21 +46,44 @@ angular.module('beerbaudApp')
                 ]
             },
             hasInlineFilters: true,
-            filters: {}
+            filters: {},
+            loading: true
         };
 
         $scope.$on('loadMoreRows', function(event, data) {
-            $scope.gridOptions2.data = getPaginationDataSet(data.top, data.skip);
+            $scope.gridOptions.data = getPaginationDataSet(data.top, data.skip);
         });
 
         function getPaginationDataSet(top, skip) {
-            if (skip === 0 || skip === 15) {
-                return dataSet1;
-            } else if (skip === 5 || skip === 20) {
-                // return dataSet2;
-            } else {
-                // return dataSet3;
-            }
+            return $scope.locations.slice(skip, (top + skip));
         }
+
+        breweryDB.getLocations('North Carolina').then(function(locations) {
+            $scope.locations = locations.data;
+            $scope.gridOptions.loading = false;
+            $scope.gridOptions.data = $scope.locations.slice(0, $scope.paginationOptions.itemsPerPage);
+
+            $scope.$broadcast('reInitGrid');
+            $scope.paginationOptions.recordCount = locations.totalResults;
+
+        });
+
+        //column sorting logic
+        $scope.$watch(function() {
+            return $scope.gridOptions.sortOptions;
+        }, function() {
+            $scope.gridOptions.data.sort(function(a, b) {
+                var descending = $scope.gridOptions.sortOptions.descending ? -1 : 1,
+                    sortProperty = $scope.gridOptions.sortOptions.column;
+                if (a[sortProperty] > b[sortProperty]) {
+                    return (descending);
+                } else if (a[sortProperty] < b[sortProperty]) {
+                    return (-1 * descending);
+                } else {
+                    return 0;
+                }
+            });
+        }, true);
+
 
     });
