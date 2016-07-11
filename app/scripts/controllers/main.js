@@ -1,5 +1,5 @@
 'use strict';
-
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 /**
  * @ngdoc function
  * @name beerbaudApp.controller:MainCtrl
@@ -20,24 +20,31 @@ angular.module('beerbaudApp')
                 id: 1,
                 name: 'name'
             }, {
-                caption: 'Address',
+                caption: 'Street Address',
                 jsonmap: 'streetAddress',
                 id: 2,
-                name: 'address'
+                name: 'streetAddress'
+            },{
+                caption: 'City',
+                jsonmap: 'locality',
+                id: 3,
+                name: 'locality'
             }, {
                 caption: 'Website',
-                jsonmap: 'website',
-                id: 3,
-                name: 'website'
+                jsonmap: 'brewery',
+                id: 4,
+                name: 'website',
+                template_url: 'views/grid/website_column.html'
             }, {
                 caption: 'Icon',
-                jsonmap: 'brewery.images.icon',
-                id: 4,
-                name: 'icon'
+                jsonmap: 'brewery.images',
+                id: 5,
+                name: 'icon',
+                template_url: 'views/grid/icon_column.html'
             }],
             data: $scope.locations,
             fixedToolbar: true,
-            selectedColumnIds: [1, 2, 3, 4],
+            selectedColumnIds: [1, 2, 3, 4,5],
             sortOptions: {
                 excludedColumns: [
                     'address',
