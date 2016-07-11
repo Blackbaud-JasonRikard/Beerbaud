@@ -24,7 +24,7 @@ angular.module('beerbaudApp')
             getLocations: function(region) {
                 return $http.get(proxy, {
                         params: {
-                          url: urlBase + 'locations?key='+ apiKey + '&region=' + encodeURIComponent(region),
+                          url: urlBase + 'locations?key='+ apiKey + '&region=' + encodeURIComponent(region) + '&order=breweryName',
                           mode: 'native'
                         }
                     }).then(function(result) {
