@@ -4,12 +4,14 @@
         Find breweries in Blackbaud SKY UX
     </p>
 </div>
-<bb-tile bb-tile-header="tile1Ctrl.resources.tile_header" bb-tile-collapsed="tile1Ctrl.is_collapsed" bb-tile-settings-click="tile1Ctrl.openSettings()">
+<bb-tile bb-tile-header="tile1Ctrl.resources.tile_header" >
     <bb-tile-header-content>
         Settings
     </bb-tile-header-content>
     <div bb-tile-section>
-        Find Breweries in
+        
+        <div class="form-control">
+        <label>Find Breweries in</label>
         <select ng-model="currentRegion" ng-change="regionChanged(currentRegion)">
             <option value="Alabama">Alabama</option>
             <option value="Alaska">Alaska</option>
@@ -63,6 +65,7 @@
             <option value="Wisconsin">Wisconsin</option>
             <option value="Wyoming">Wyoming</option>
         </select>
+        </div>
     </div>
 </bb-tile>
 <bb-tile bb-tile-header="'Breweries in ' + currentRegion">

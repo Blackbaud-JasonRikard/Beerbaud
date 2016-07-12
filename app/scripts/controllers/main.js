@@ -55,7 +55,7 @@ angular.module('beerbaudApp')
                     'icon'
                 ]
             },
-            hasInlineFilters: true,
+            hideFilters: true,
             filters: {},
             loading: true,
             hasMoreRows: true
@@ -70,7 +70,7 @@ angular.module('beerbaudApp')
                     rows.push({
                         'icon': (value.brewery.images) ? value.brewery.images.icon : '',
                         'website': (value.brewery.website) ? value.brewery.website : '',
-                        'name': (value.brewery.name) ? value.brewery.name : '',
+                        'name': (value.brewery) ? value.brewery : '',
                         'locality': (value.locality) ? value.locality : '',
                         'streetAddress': (value.streetAddress) ? value.streetAddress : '',
                     });
