@@ -21,10 +21,10 @@ angular.module('beerbaudApp')
 
         // Public API here
         return {
-            getLocations: function(region) {
+            getLocations: function(region, pageNum) {
                 return $http.get(proxy, {
                         params: {
-                          url: urlBase + 'locations?key='+ apiKey + '&region=' + encodeURIComponent(region) + '&order=breweryName',
+                          url: urlBase + 'locations?key='+ apiKey + '&region=' + encodeURIComponent(region) + '&order=breweryName&p=' + pageNum,
                           mode: 'native'
                         }
                     }).then(function(result) {

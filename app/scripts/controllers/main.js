@@ -11,15 +11,15 @@ angular.module('beerbaudApp')
     .controller('MainCtrl', function($scope, breweryDB) {
 
         $scope.locations = [];
-        $scope.paginationOptions = { itemsPerPage: 20 };
-        $scope.currentRegion = 'South Carolina';
+        $scope.paginationOptions = { itemsPerPage: 25 };
+        $scope.currentRegion = 'North Carolina';
 
         $scope.gridOptions = {
             columns: [{
                 caption: 'Name',
                 jsonmap: 'brewery.name',
                 id: 2,
-                name: 'brewery'
+                name: 'brewery.name'
             }, {
                 caption: 'Street Address',
                 jsonmap: 'streetAddress',
@@ -32,15 +32,15 @@ angular.module('beerbaudApp')
                 name: 'locality'
             }, {
                 caption: 'Website',
-                jsonmap: 'brewery',
+                jsonmap: 'brewery.website',
                 id: 5,
-                name: 'website',
+                name: 'brewery.website',
                 template_url: 'views/grid/website_column.html'
             }, {
                 caption: 'Icon',
-                jsonmap: 'brewery.images',
+                jsonmap: 'brewery.images.icon',
                 id: 1,
-                name: 'icon',
+                name: 'brewery.images.icon',
                 template_url: 'views/grid/icon_column.html'
             }],
             data: $scope.locations,
@@ -49,22 +49,48 @@ angular.module('beerbaudApp')
             sortOptions: {
                 excludedColumns: [
                     'streetAddress',
-                    'website',
-                    'icon'
+                    'brewery.website',
+                    'brewery.images.icon'
                 ]
             },
             hasInlineFilters: true,
             filters: {},
-            loading: true
+            loading: true,
+            hasMoreRows: true
         };
 
         $scope.$on('loadMoreRows', function(event, data) {
-            $scope.gridOptions.data = getPaginationDataSet(data.top, data.skip);
+            $scope.gridOptions.loading = true;
+            loadNextPage().then(function(result) {
+                var rows = [];
+                //build rows
+                angular.forEach(result.data, function(value) {
+                    rows.push({ 
+                    	'brewery.images.icon': (value.brewery.images) ? value.brewery.images.icon : '',
+                    	'brewery.website': (value.brewery.website) ? value.brewery.website : '',
+                    	'brewery.name': (value.brewery.name) ? value.brewery.name : '',
+                    	'city': (value.locality) ? value.locality : '',
+                    	'streetAddress': (value.streetAddress) ? value.streetAddress : '',
+                    	 });
+                });
+                data.promise.resolve(rows);
+                $scope.gridOptions.loading = false;
+            });
+
+            //Check to see if we need to load the next page from the API
+            //if we have less locations than the api result total and we have skipped past all that we have loaded
+            // if ($scope.locations.length < $scope.paginationOptions.recordCount && data.skip >= $scope.locations.length) {
+            //     //load the next page of data from the API
+            //     data.promise.resolve(loadNextPage(data.skip));
+            // } else {
+            //     $scope.gridOptions.data = getPaginationDataSet(data.top, data.skip);
+            //     $scope.gridOptions.loading = false;
+            // }
         });
 
-        function getPaginationDataSet(top, skip) {
-            return $scope.locations.slice(skip, (top + skip));
-        }
+        // function getPaginationDataSet(top, skip) {
+        //     return $scope.locations.slice(skip, (top + skip));
+        // }
 
 
 
@@ -75,24 +101,11 @@ angular.module('beerbaudApp')
             $scope.gridOptions.data.sort(function(a, b) {
                 var descending = $scope.gridOptions.sortOptions.descending ? -1 : 1,
                     sortProperty = $scope.gridOptions.sortOptions.column;
-                    //sort breweries differently since it's an object
-                if (sortProperty === 'brewery') {
-                    if (a[sortProperty].name > b[sortProperty].name) {
-                        return (descending);
-                    } else if (a[sortProperty].name < b[sortProperty].name) {
-                        return (-1 * descending);
-                    } else {
-                        return 0;
+                    if(sortProperty === 'brewery.name'){
+                    	return a.brewery.name.localeCompare(b.brewery.name) * descending;
                     }
-                } else {
-                    if (a[sortProperty] > b[sortProperty]) {
-                        return (descending);
-                    } else if (a[sortProperty] < b[sortProperty]) {
-                        return (-1 * descending);
-                    } else {
-                        return 0;
-                    }
-                }
+                    return a[sortProperty].localeCompare(b[sortProperty]) * descending;
+                
             });
         }, true);
 
@@ -102,10 +115,10 @@ angular.module('beerbaudApp')
             loadLocationTable();
         };
 
-		//Loads or resets the bb-grid with the currently selected region
+        //Loads or resets the bb-grid with the currently selected region
         function loadLocationTable() {
             $scope.gridOptions.loading = true;
-            breweryDB.getLocations($scope.currentRegion).then(function(locations) {
+            breweryDB.getLocations($scope.currentRegion, 1).then(function(locations) {
                 $scope.locations = locations.data;
                 $scope.gridOptions.loading = false;
                 $scope.gridOptions.data = $scope.locations.slice(0, $scope.paginationOptions.itemsPerPage);
@@ -114,6 +127,11 @@ angular.module('beerbaudApp')
                 $scope.paginationOptions.recordCount = locations.totalResults;
                 $scope.paginationOptions.currentPage = 1;
             });
+        }
+
+        function loadNextPage() {
+            $scope.paginationOptions.currentPage++;
+            return breweryDB.getLocations($scope.currentRegion, $scope.paginationOptions.currentPage);
         }
 
         loadLocationTable();
