@@ -17,9 +17,11 @@ angular.module('beerbaudApp')
         $scope.gridOptions = {
             columns: [{
                 caption: 'Name',
-                jsonmap: 'brewery.name',
+                jsonmap: 'brewery',
                 id: 2,
-                name: 'brewery.name'
+                name: 'name',
+                controller: 'BreweryNameColCtrl as breweryNameCtrl',
+                template_url: 'views/grid/brewery_name_column.html'
             }, {
                 caption: 'Street Address',
                 jsonmap: 'streetAddress',
@@ -34,13 +36,13 @@ angular.module('beerbaudApp')
                 caption: 'Website',
                 jsonmap: 'brewery.website',
                 id: 5,
-                name: 'brewery.website',
+                name: 'website',
                 template_url: 'views/grid/website_column.html'
             }, {
                 caption: 'Icon',
                 jsonmap: 'brewery.images.icon',
                 id: 1,
-                name: 'brewery.images.icon',
+                name: 'icon',
                 template_url: 'views/grid/icon_column.html'
             }],
             data: $scope.locations,
@@ -49,8 +51,8 @@ angular.module('beerbaudApp')
             sortOptions: {
                 excludedColumns: [
                     'streetAddress',
-                    'brewery.website',
-                    'brewery.images.icon'
+                    'website',
+                    'icon'
                 ]
             },
             hasInlineFilters: true,
@@ -65,13 +67,13 @@ angular.module('beerbaudApp')
                 var rows = [];
                 //build rows
                 angular.forEach(result.data, function(value) {
-                    rows.push({ 
-                    	'brewery.images.icon': (value.brewery.images) ? value.brewery.images.icon : '',
-                    	'brewery.website': (value.brewery.website) ? value.brewery.website : '',
-                    	'brewery.name': (value.brewery.name) ? value.brewery.name : '',
-                    	'city': (value.locality) ? value.locality : '',
-                    	'streetAddress': (value.streetAddress) ? value.streetAddress : '',
-                    	 });
+                    rows.push({
+                        'icon': (value.brewery.images) ? value.brewery.images.icon : '',
+                        'website': (value.brewery.website) ? value.brewery.website : '',
+                        'name': (value.brewery.name) ? value.brewery.name : '',
+                        'locality': (value.locality) ? value.locality : '',
+                        'streetAddress': (value.streetAddress) ? value.streetAddress : '',
+                    });
                 });
                 data.promise.resolve(rows);
                 $scope.gridOptions.loading = false;
@@ -101,11 +103,9 @@ angular.module('beerbaudApp')
             $scope.gridOptions.data.sort(function(a, b) {
                 var descending = $scope.gridOptions.sortOptions.descending ? -1 : 1,
                     sortProperty = $scope.gridOptions.sortOptions.column;
-                    if(sortProperty === 'brewery.name'){
-                    	return a.brewery.name.localeCompare(b.brewery.name) * descending;
-                    }
-                    return a[sortProperty].localeCompare(b[sortProperty]) * descending;
-                
+              
+                return a[sortProperty].localeCompare(b[sortProperty]) * descending;
+
             });
         }, true);
 
@@ -135,4 +135,17 @@ angular.module('beerbaudApp')
         }
 
         loadLocationTable();
+
+
+        
+
+    }).controller('BreweryNameColCtrl', function($scope,bbModal){
+    	this.open = function(data) {
+    		$scope.brewery = data;
+            bbModal.open({
+                controller: 'BrewerydetailsCtrl as contentCtrl',
+                templateUrl: 'views/brewerydetails.html',
+                scope: $scope
+            });
+        };
     });
