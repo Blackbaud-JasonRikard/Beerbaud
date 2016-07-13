@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "blackbaud-skyux": "^1.6.5",
-    "angular-route": "^1.4.0",
+    "angular-route": "^1.4.0"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.0"
