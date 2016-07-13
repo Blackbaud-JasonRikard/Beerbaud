@@ -7,6 +7,8 @@ version 0.15.1.
 
 Clone, install dependencies, serve
 
+`gem install compass`
+
 `git clone https://github.com/Blackbaud-JasonRikard/Beerbaud.git && cd Beerbaud && npm install && bower install && grunt serve`
 
 ## Build & development
