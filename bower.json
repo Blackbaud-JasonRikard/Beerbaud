@@ -2,12 +2,17 @@
   "name": "beerbaud",
   "version": "0.0.0",
   "dependencies": {
+    "blackbaud-skyux": "^1.6.5",
     "angular-route": "^1.4.0",
-    "blackbaud-skyux": "^1.6.5"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.0"
   },
   "appPath": "app",
-  "moduleName": "beerbaudApp"
+  "moduleName": "beerbaudApp",
+  "overrides": {
+    "angular-route": {
+      "dependencies": []
+    }
+  }
 }
