@@ -77,6 +77,7 @@ angular.module('beerbaudApp')
                 });
                 data.promise.resolve(rows);
                 $scope.gridOptions.loading = false;
+                $scope.gridOptions.hasMoreRows = (result.numberOfPages === result.currentPage)? false : true;
             });
 
             //Check to see if we need to load the next page from the API
@@ -126,6 +127,7 @@ angular.module('beerbaudApp')
                 $scope.$broadcast('reInitGrid');
                 $scope.paginationOptions.recordCount = locations.totalResults;
                 $scope.paginationOptions.currentPage = 1;
+                $scope.gridOptions.hasMoreRows = (locations.numberOfPages === locations.currentPage)? false : true;
             });
         }
 
