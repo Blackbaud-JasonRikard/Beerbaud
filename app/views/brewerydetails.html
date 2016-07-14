@@ -1,12 +1,17 @@
-
-    <bb-modal>
-        <div class="modal-form">
-            <bb-modal-header bb-modal-help-key="'bb-security-users.html'">{{brewery.name}}</bb-modal-header>
-            <div bb-modal-body>
-                <img ng-src="{{brewery.images.squareMedium}}">
-            </div>
-            <bb-modal-footer>
-                <bb-modal-footer-button-cancel></bb-modal-footer-button-cancel>
-            </bb-modal-footer>
+<bb-modal>
+    <div class="modal-form brewery-details">
+        <bb-modal-header>{{brewery.name}}</bb-modal-header>
+        <div bb-modal-body>
+            <img class="logo" ng-src="{{brewery.images.squareMedium}}">
+            <h2>{{brewery.name}}</h2>
+            <ul>
+                <li ng-show="brewery.established">Established in {{brewery.established}}</li>
+                <li ng-show="brewery.website"><a href="{{brewery.website}}" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a></li>
+            </ul>
+            <p>{{brewery.description}} <span class="side-note" ng-hide="brewery.description">No description available</span></p>
         </div>
-    </bb-modal>
+        <bb-modal-footer>
+            <bb-modal-footer-button-cancel>Close</bb-modal-footer-button-cancel>
+        </bb-modal-footer>
+    </div>
+</bb-modal>
