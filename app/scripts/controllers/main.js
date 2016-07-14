@@ -53,7 +53,8 @@ angular.module('beerbaudApp')
                     'streetAddress',
                     'website',
                     'icon'
-                ]
+                ],
+                column:'name'
             },
             hideFilters: true,
             filters: {},
@@ -101,13 +102,8 @@ angular.module('beerbaudApp')
         $scope.$watch(function() {
             return $scope.gridOptions.sortOptions;
         }, function() {
-            $scope.gridOptions.data.sort(function(a, b) {
-                var descending = $scope.gridOptions.sortOptions.descending ? -1 : 1,
-                    sortProperty = $scope.gridOptions.sortOptions.column;
-              
-                return a[sortProperty].localeCompare(b[sortProperty]) * descending;
-
-            });
+           loadLocationTable();
+            
         }, true);
 
         //trigger a region change and table reload
@@ -119,7 +115,9 @@ angular.module('beerbaudApp')
         //Loads or resets the bb-grid with the currently selected region
         function loadLocationTable() {
             $scope.gridOptions.loading = true;
-            breweryDB.getLocations($scope.currentRegion, 1).then(function(locations) {
+            var sort = ($scope.gridOptions.sortOptions.descending) ? 'DESC' : 'ASC';
+            var order = ($scope.gridOptions.sortOptions.column === 'name') ? 'breweryName' : 'locality';
+            breweryDB.getLocations($scope.currentRegion, 1, order, sort).then(function(locations) {
                 $scope.locations = locations.data;
                 $scope.gridOptions.loading = false;
                 $scope.gridOptions.data = $scope.locations.slice(0, $scope.paginationOptions.itemsPerPage);
@@ -133,7 +131,9 @@ angular.module('beerbaudApp')
 
         function loadNextPage() {
             $scope.paginationOptions.currentPage++;
-            return breweryDB.getLocations($scope.currentRegion, $scope.paginationOptions.currentPage);
+            var sort = ($scope.gridOptions.sortOptions.descending) ? 'DESC' : 'ASC';
+            var order = ($scope.gridOptions.sortOptions.column === 'name') ? 'breweryName' : 'locality';
+            return breweryDB.getLocations($scope.currentRegion, $scope.paginationOptions.currentPage, order, sort);
         }
 
         loadLocationTable();
